@@ -9,13 +9,13 @@
 ## 安装
 
 ```shell script
-composer require hyperf-ext/jwt
+composer composer require hyperf-yfd/jwt
 ```
 
 ## 发布配置
 
 ```shell script
-php bin/hyperf.php vendor:publish hyperf-ext/jwt
+php bin/hyperf.php vendor:publish hyperf-yfd/jwt
 ```
 
 > 文件位于 `config/autoload/jwt.php`。
