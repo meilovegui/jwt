@@ -8,20 +8,22 @@ declare(strict_types=1);
  * @contact  eric@zhu.email
  * @license  https://github.com/hyperf-ext/jwt/blob/master/LICENSE
  */
+
 namespace HyperfExt\Jwt;
 
 use ArrayAccess;
 use BadMethodCallException;
 use Countable;
-use Hyperf\Utils\ApplicationContext;
-use Hyperf\Utils\Arr;
-use Hyperf\Utils\Contracts\Arrayable;
-use Hyperf\Utils\Contracts\Jsonable;
+use Hyperf\Collection\Arr;
+use Hyperf\Context\Context;
+use Hyperf\Contract\Arrayable;
+use Hyperf\Contract\Jsonable;
 use HyperfExt\Jwt\Claims\AbstractClaim;
 use HyperfExt\Jwt\Claims\Collection;
 use HyperfExt\Jwt\Contracts\PayloadValidatorInterface;
 use HyperfExt\Jwt\Exceptions\PayloadException;
 use JsonSerializable;
+
 
 class Payload implements ArrayAccess, Arrayable, Countable, Jsonable, JsonSerializable
 {
@@ -42,8 +44,9 @@ class Payload implements ArrayAccess, Arrayable, Countable, Jsonable, JsonSerial
      */
     public function __construct(Collection $claims, bool $ignoreExpired = false)
     {
-        $this->validator = ApplicationContext::getContainer()->get(PayloadValidatorInterface::class);
-        $this->claims = $this->validator->check($claims, $ignoreExpired);
+        #$this->validator = Context::getContainer()->get(PayloadValidatorInterface::class);
+        $this->validator = make(PayloadValidatorInterface::class);
+        $this->claims    = $this->validator->check($claims, $ignoreExpired);
     }
 
     /**
@@ -69,8 +72,8 @@ class Payload implements ArrayAccess, Arrayable, Countable, Jsonable, JsonSerial
     /**
      * Magically get a claim value.
      *
-     * @throws \BadMethodCallException
      * @return mixed
+     * @throws \BadMethodCallException
      */
     public function __call(string $method, array $parameters)
     {
@@ -105,7 +108,7 @@ class Payload implements ArrayAccess, Arrayable, Countable, Jsonable, JsonSerial
         $claims = $this->getClaims();
 
         foreach ($values as $key => $value) {
-            if (! $claims->has($key) or ! $claims->get($key)->matches($value, $strict)) {
+            if (!$claims->has($key) or !$claims->get($key)->matches($value, $strict)) {
                 return false;
             }
         }
@@ -201,8 +204,13 @@ class Payload implements ArrayAccess, Arrayable, Countable, Jsonable, JsonSerial
         return Arr::has($this->toArray(), $key);
     }
 
-
-    #[\ReturnTypeWillChange]
+    /**
+     * Get an item at a given offset.
+     *
+     * @param mixed $key
+     *
+     * @return mixed
+     */
     public function offsetGet($key)
     {
         return Arr::get($this->toArray(), $key);
@@ -216,7 +224,6 @@ class Payload implements ArrayAccess, Arrayable, Countable, Jsonable, JsonSerial
      *
      * @throws \HyperfExt\Jwt\Exceptions\PayloadException
      */
-    #[\ReturnTypeWillChange]
     public function offsetSet($key, $value)
     {
         throw new PayloadException('The payload is immutable');
@@ -229,7 +236,6 @@ class Payload implements ArrayAccess, Arrayable, Countable, Jsonable, JsonSerial
      *
      * @throws \HyperfExt\Jwt\Exceptions\PayloadException
      */
-    #[\ReturnTypeWillChange]
     public function offsetUnset($key)
     {
         throw new PayloadException('The payload is immutable');
