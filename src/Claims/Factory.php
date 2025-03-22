@@ -8,10 +8,10 @@ declare(strict_types=1);
  * @contact  eric@zhu.email
  * @license  https://github.com/hyperf-ext/jwt/blob/master/LICENSE
  */
+
 namespace HyperfExt\Jwt\Claims;
 
-use Hyperf\Utils\ApplicationContext;
-use Hyperf\Utils\Str;
+use Hyperf\Stringable\Str;
 use HyperfExt\Jwt\Contracts\ClaimInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -113,7 +113,7 @@ class Factory
      */
     public function setTtl(?int $ttl)
     {
-        $this->ttl = $ttl === null ? null : (int) $ttl;
+        $this->ttl = $ttl === null ? null : (int)$ttl;
 
         return $this;
     }
@@ -133,7 +133,7 @@ class Factory
      */
     public function setRefreshTtl(?int $refreshTtl)
     {
-        $this->refreshTtl = $refreshTtl === null ? null : (int) $refreshTtl;
+        $this->refreshTtl = $refreshTtl === null ? null : (int)$refreshTtl;
 
         return $this;
     }
@@ -160,7 +160,7 @@ class Factory
 
     public function iss(): string
     {
-        return ApplicationContext::getContainer()->get(ServerRequestInterface::class)->url();
+        return make(ServerRequestInterface::class)->url();
     }
 
     public function iat(): int

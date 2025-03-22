@@ -211,6 +211,8 @@ class Payload implements ArrayAccess, Arrayable, Countable, Jsonable, JsonSerial
      *
      * @return mixed
      */
+    // 第214行附近修改为：
+    #[\ReturnTypeWillChange]
     public function offsetGet($key)
     {
         return Arr::get($this->toArray(), $key);
@@ -224,11 +226,16 @@ class Payload implements ArrayAccess, Arrayable, Countable, Jsonable, JsonSerial
      *
      * @throws \HyperfExt\Jwt\Exceptions\PayloadException
      */
-    public function offsetSet($key, $value)
+    /*public function offsetSet($key, $value)
     {
         throw new PayloadException('The payload is immutable');
-    }
+    }*/
 
+
+// 修改方案一：添加返回类型声明 (推荐)
+    public function offsetSet(mixed $key, mixed $value): void {
+        $this->claims[$key] = $value;
+    }
     /**
      * Don't allow changing the payload as it should be immutable.
      *
@@ -236,6 +243,7 @@ class Payload implements ArrayAccess, Arrayable, Countable, Jsonable, JsonSerial
      *
      * @throws \HyperfExt\Jwt\Exceptions\PayloadException
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($key)
     {
         throw new PayloadException('The payload is immutable');

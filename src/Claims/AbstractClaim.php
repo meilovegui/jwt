@@ -8,11 +8,12 @@ declare(strict_types=1);
  * @contact  eric@zhu.email
  * @license  https://github.com/hyperf-ext/jwt/blob/master/LICENSE
  */
+
 namespace HyperfExt\Jwt\Claims;
 
-use Hyperf\Utils\ApplicationContext;
-use Hyperf\Utils\Contracts\Arrayable;
-use Hyperf\Utils\Contracts\Jsonable;
+use ArrayAccess;
+use Hyperf\Contract\Arrayable;
+use Hyperf\Contract\Jsonable;
 use HyperfExt\Jwt\Contracts\ClaimInterface;
 use HyperfExt\Jwt\Contracts\ManagerInterface;
 use JsonSerializable;
@@ -144,9 +145,9 @@ abstract class AbstractClaim implements ClaimInterface, Arrayable, Jsonable, Jso
 
     protected function getFactory(): Factory
     {
-        if (! empty($this->factory)) {
+        if (!empty($this->factory)) {
             return $this->factory;
         }
-        return $this->factory = ApplicationContext::getContainer()->get(ManagerInterface::class)->getClaimFactory();
+        return $this->factory = make(ManagerInterface::class)->getClaimFactory();
     }
 }

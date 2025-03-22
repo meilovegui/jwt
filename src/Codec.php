@@ -8,11 +8,12 @@ declare(strict_types=1);
  * @contact  eric@zhu.email
  * @license  https://github.com/hyperf-ext/jwt/blob/master/LICENSE
  */
+
 namespace HyperfExt\Jwt;
 
 use Exception;
-use Hyperf\Utils\Arr;
-use Hyperf\Utils\Collection;
+use Hyperf\Collection\Arr;
+use Hyperf\Collection\Collection;
 use HyperfExt\Jwt\Contracts\CodecInterface;
 use HyperfExt\Jwt\Exceptions\JwtException;
 use HyperfExt\Jwt\Exceptions\TokenInvalidException;
@@ -107,20 +108,20 @@ class Codec implements CodecInterface
     public function __construct(string $secret, string $algo, array $keys, $config = null)
     {
         $this->secret = $secret;
-        $this->algo = $algo;
-        $this->keys = $keys;
+        $this->algo   = $algo;
+        $this->keys   = $keys;
         $this->config = $config;
 
         $this->signer = $this->getSigner();
 
-        if (! is_null($config)) {
+        if (!is_null($config)) {
             $this->config = $config;
         } elseif ($this->isAsymmetric()) {
             $this->config = Configuration::forAsymmetricSigner($this->signer, $this->getSigningKey(), $this->getVerificationKey());
         } else {
             $this->config = Configuration::forSymmetricSigner($this->signer, InMemory::plainText($this->getSecret()));
         }
-        if (! count($this->config->validationConstraints())) {
+        if (!count($this->config->validationConstraints())) {
             $this->config->setValidationConstraints(
                 new SignedWith($this->signer, $this->getVerificationKey()),
             );
@@ -255,7 +256,7 @@ class Codec implements CodecInterface
             throw new TokenInvalidException('Could not decode token: ' . $e->getMessage(), $e->getCode(), $e);
         }
 
-        if (! $this->config->validator()->validate($jwt, ...$this->config->validationConstraints())) {
+        if (!$this->config->validator()->validate($jwt, ...$this->config->validationConstraints())) {
             throw new TokenInvalidException('Token Signature could not be verified.');
         }
         return (new Collection($jwt->claims()->all()))->map(function ($claim) {
@@ -289,25 +290,25 @@ class Codec implements CodecInterface
     {
         switch ($key) {
             case RegisteredClaims::ID:
-                $builder->identifiedBy((string) $value);
+                $builder->identifiedBy((string)$value);
                 break;
             case RegisteredClaims::EXPIRATION_TIME:
-                $builder->expiresAt(\DateTimeImmutable::createFromFormat('U', (string) $value));
+                $builder->expiresAt(\DateTimeImmutable::createFromFormat('U', (string)$value));
                 break;
             case RegisteredClaims::NOT_BEFORE:
-                $builder->canOnlyBeUsedAfter(\DateTimeImmutable::createFromFormat('U', (string) $value));
+                $builder->canOnlyBeUsedAfter(\DateTimeImmutable::createFromFormat('U', (string)$value));
                 break;
             case RegisteredClaims::ISSUED_AT:
-                $builder->issuedAt(\DateTimeImmutable::createFromFormat('U', (string) $value));
+                $builder->issuedAt(\DateTimeImmutable::createFromFormat('U', (string)$value));
                 break;
             case RegisteredClaims::ISSUER:
-                $builder->issuedBy((string) $value);
+                $builder->issuedBy((string)$value);
                 break;
             case RegisteredClaims::AUDIENCE:
-                $builder->permittedFor((string) $value);
+                $builder->permittedFor((string)$value);
                 break;
             case RegisteredClaims::SUBJECT:
-                $builder->relatedTo((string) $value);
+                $builder->relatedTo((string)$value);
                 break;
             default:
                 $builder->withClaim($key, $value);
@@ -325,7 +326,7 @@ class Codec implements CodecInterface
             return $this->signer;
         }
 
-        if (! array_key_exists($this->algo, $this->signers)) {
+        if (!array_key_exists($this->algo, $this->signers)) {
             throw new JwtException('The given algorithm could not be found');
         }
 

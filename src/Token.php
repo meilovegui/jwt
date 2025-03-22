@@ -10,7 +10,7 @@ declare(strict_types=1);
  */
 namespace HyperfExt\Jwt;
 
-use Hyperf\Utils\ApplicationContext;
+
 use HyperfExt\Jwt\Contracts\TokenValidatorInterface;
 
 class Token
@@ -30,7 +30,7 @@ class Token
      */
     public function __construct(string $value)
     {
-        $this->validator = ApplicationContext::getContainer()->get(TokenValidatorInterface::class);
+        $this->validator = make(TokenValidatorInterface::class);
         $this->value = (string) $this->validator->check($value);
     }
 
