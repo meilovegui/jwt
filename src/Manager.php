@@ -8,9 +8,10 @@ declare(strict_types=1);
  * @contact  eric@zhu.email
  * @license  https://github.com/hyperf-ext/jwt/blob/master/LICENSE
  */
+
 namespace HyperfExt\Jwt;
 
-use Hyperf\Utils\Arr;
+use Hyperf\Collection\Arr;
 use HyperfExt\Jwt\Claims\Factory as ClaimFactory;
 use HyperfExt\Jwt\Contracts\CodecInterface;
 use HyperfExt\Jwt\Contracts\ManagerInterface;
@@ -63,13 +64,14 @@ class Manager implements ManagerInterface
 
     public function __construct(
         CodecInterface $codec,
-        Blacklist $blacklist,
-        ClaimFactory $claimFactory,
+        Blacklist      $blacklist,
+        ClaimFactory   $claimFactory,
         PayloadFactory $payloadFactory
-    ) {
-        $this->codec = $codec;
-        $this->blacklist = $blacklist;
-        $this->claimFactory = $claimFactory;
+    )
+    {
+        $this->codec          = $codec;
+        $this->blacklist      = $blacklist;
+        $this->claimFactory   = $claimFactory;
         $this->payloadFactory = $payloadFactory;
     }
 
@@ -127,7 +129,7 @@ class Manager implements ManagerInterface
      */
     public function invalidate(Token $token, bool $forceForever = false): bool
     {
-        if (! $this->blacklistEnabled) {
+        if (!$this->blacklistEnabled) {
             throw new JwtException('You must have the blacklist enabled to invalidate a token.');
         }
 

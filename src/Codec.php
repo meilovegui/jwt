@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace HyperfExt\Jwt;
 
 use Exception;
+
 use Hyperf\Collection\Arr;
 use Hyperf\Collection\Collection;
 use HyperfExt\Jwt\Contracts\CodecInterface;

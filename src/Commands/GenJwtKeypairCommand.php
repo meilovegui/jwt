@@ -8,9 +8,10 @@ declare(strict_types=1);
  * @contact  eric@zhu.email
  * @license  https://github.com/hyperf-ext/jwt/blob/master/LICENSE
  */
+
 namespace HyperfExt\Jwt\Commands;
 
-use Hyperf\Utils\Str;
+use Hyperf\Stringable\Str;
 
 class GenJwtKeypairCommand extends AbstractGenCommand
 {
@@ -34,7 +35,7 @@ class GenJwtKeypairCommand extends AbstractGenCommand
 
         [$privateKey, $publicKey] = $this->generateKeypair($config, $passphrase);
 
-        if (! empty($passphrase)) {
+        if (!empty($passphrase)) {
             $passphrase = base64_encode($passphrase);
         }
 
@@ -73,7 +74,7 @@ class GenJwtKeypairCommand extends AbstractGenCommand
 
     protected function writeEnv(string $path, string $name, ?string $value, bool $force)
     {
-        $envKey = 'JWT_' . Str::upper(Str::snake($name));
+        $envKey   = 'JWT_' . Str::upper(Str::snake($name));
         $envValue = empty($value) ? '(null)' : '"' . str_replace("\n", '\\n', $value) . '"';
 
         if (Str::contains(file_get_contents($path), $envKey) === false) {
